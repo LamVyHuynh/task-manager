@@ -63,10 +63,16 @@ function App() {
     setEditDeadline("2026-12-31"); // Reset input sau khi lưu thay đổi
   };
 
+  // Tìm kiếm công việc
+  const [searchItem, setSearchItem] = useState("");
   // Lọc công việc theo trạng thái
-
-  const filteredTasks =
-    status === "ALL" ? tasks : tasks.filter((task) => task.status === status);
+  const filteredTasks = tasks.filter((task) => {
+    const matchStatus = status === "ALL" || task.status === status;
+    const matchSearch = task.title
+      .toLowerCase()
+      .includes(searchItem.toLowerCase());
+    return matchStatus && matchSearch;
+  });
 
   return (
     <div>
@@ -79,58 +85,66 @@ function App() {
         ></input>
         <button onClick={handleAddTask}>Thêm Công Việc</button>
       </div>
+      {/* Tìm kiếm công việc */}
+      <input
+        placeholder="Công việc cần tìm"
+        onChange={(e) => setSearchItem(e.target.value)}
+      ></input>
       {/* Lọc trạng thái công việc */}
       <select value={status} onChange={(e) => setStatus(e.target.value)}>
         <option value="ALL">TẤT CẢ</option>
         <option value="TODO">TODO</option>
-        <option value="DOING">DOING</option>
+        <option value="In Proccess">In Proccess</option>
         <option value="DONE">DONE</option>
       </select>
 
       <hr />
-
-      {filteredTasks.map((task) => (
-        <div key={task.id}>
-          <h3>{task.title}</h3>
-          <p>Trạng thái: {task.status}</p>
-          <p>Deadline: {task.deadline}</p>
-          <div>
-            <button onClick={() => handleDeleteTask(task.id)}>
-              Xoá công việc
-            </button>
-
-            {editingTaskId === task.id ? (
-              <div>
-                <input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                ></input>
-                <select
-                  value={editStatus}
-                  onChange={(e) => setEditStatus(e.target.value)}
-                >
-                  <option value="TODO">TODO</option>
-                  <option value="DOING">DOING</option>
-                  <option value="DONE">DONE</option>
-                </select>
-                <input
-                  type="date"
-                  value={editDeadline}
-                  onChange={(e) => setEditDeadline(e.target.value)}
-                ></input>
-
-                <button onClick={() => handleUpdateTask(task.id)}>
-                  Lưu thay đổi
-                </button>
-              </div>
-            ) : (
-              <button onClick={() => handleStartEditTask(task)}>
-                Sửa công việc
+      {filteredTasks.length > 0 ? (
+        filteredTasks.map((task) => (
+          <div key={task.id}>
+            <h3>{task.title}</h3>
+            <p>Trạng thái: {task.status}</p>
+            <p>Deadline: {task.deadline}</p>
+            <div>
+              <button onClick={() => handleDeleteTask(task.id)}>
+                Xoá công việc
               </button>
-            )}
+
+              {editingTaskId === task.id ? (
+                <div>
+                  <input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                  ></input>
+                  <select
+                    value={editStatus}
+                    onChange={(e) => setEditStatus(e.target.value)}
+                  >
+                    <option value="TODO">TODO</option>
+                    <option value="In Proccess">In Progress</option>
+                    <option value="DONE">DONE</option>
+                  </select>
+                  <input
+                    type="date"
+                    value={editDeadline}
+                    onChange={(e) => setEditDeadline(e.target.value)}
+                  ></input>
+
+                  <button onClick={() => handleUpdateTask(task.id)}>
+                    Lưu thay đổi
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => handleStartEditTask(task)}>
+                  Sửa công việc
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p>Không có công việc nào phù hợp với tiêu chí tìm kiếm.</p>
+      )}
     </div>
   );
 }
