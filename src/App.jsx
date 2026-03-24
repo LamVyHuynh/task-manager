@@ -87,6 +87,18 @@ function App() {
     return matchStatus && matchSearch;
   });
 
+  // Cảnh báo quá hạn deadline của công việc
+  const isOverdue = (deadline) => {
+    const today = new Date();
+    const taskDeadline = new Date(deadline);
+
+    // Set thời gian về 0:0 để chỉ còn so sánh ngày với nhau mà thoi
+    today.setHours(0, 0, 0, 0);
+    taskDeadline.setHours(0, 0, 0, 0);
+
+    return taskDeadline < today;
+  };
+
   return (
     <div>
       <h1>Trang Quản Lý Công Việc</h1>
@@ -123,6 +135,9 @@ function App() {
             <h3>{task.title}</h3>
             <p>Trạng thái: {task.status}</p>
             <p>Deadline: {task.deadline}</p>
+            {isOverdue(task.deadline) && task.status !== "DONE" && (
+              <p style={{ color: "red" }}>Công việc đã quá hạn!</p>
+            )}
             <div>
               <button onClick={() => handleDeleteTask(task.id)}>
                 Xoá công việc
