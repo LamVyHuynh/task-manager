@@ -89,6 +89,7 @@ function App() {
 
   // Cảnh báo quá hạn deadline của công việc
   const isOverdue = (deadline) => {
+    if (!deadline) return false; // Nếu không có deadline, không xem là quá hạn
     const today = new Date();
     const taskDeadline = new Date(deadline);
 
@@ -97,6 +98,22 @@ function App() {
     taskDeadline.setHours(0, 0, 0, 0);
 
     return taskDeadline < today;
+  };
+
+  // Cảnh báo sắp đến thời gian deadline của công việc
+  const isDueSoon = (deadline) => {
+    if (!deadline) return false; // Nếu không có deadline, không cần cảnh báo
+    const today = new Date();
+    const taskDeadline = new Date(deadline);
+
+    // Set thời gian về 0:0 để chỉ còn so sánh ngày với nhau mà thôi
+    today.setHours(0, 0, 0, 0);
+    taskDeadline.setHours(0, 0, 0, 0);
+
+    const timeDiff = taskDeadline - today;
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+    return daysDiff >= 0 && daysDiff <= 3; // Cảnh báo nếu deadline trong vòng 3 ngày tới
   };
 
   return (
@@ -135,8 +152,23 @@ function App() {
             <h3>{task.title}</h3>
             <p>Trạng thái: {task.status}</p>
             <p>Deadline: {task.deadline}</p>
+            {/* Thông báo quá hạn */}
             {isOverdue(task.deadline) && task.status !== "DONE" && (
               <p style={{ color: "red" }}>Công việc đã quá hạn!</p>
+            )}
+
+            {/*  Cảnh báo sắp đến hạn */}
+            {!isOverdue(task.deadline) &&
+              isDueSoon(task.deadline) &&
+              task.status !== "DONE" && (
+                <p style={{ color: "orange" }}>
+                  Cảnh báo: Công việc sắp đến hạn!
+                </p>
+              )}
+
+            {/* Đánh dâu công việc hoàn thành */}
+            {task.status === "DONE" && (
+              <p style={{ color: "green" }}>Công việc đã hoàn thành!</p>
             )}
             <div>
               <button onClick={() => handleDeleteTask(task.id)}>
