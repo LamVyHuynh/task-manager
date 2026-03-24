@@ -114,7 +114,7 @@ function App() {
   };
 
   const formatDeadline = (deadline) => {
-    if (!deadline) return "Chua dat deadline";
+    if (!deadline) return "Chưa đặt deadline";
 
     return new Date(deadline).toLocaleDateString("vi-VN", {
       day: "2-digit",
@@ -145,6 +145,12 @@ function App() {
     }
 
     return "bg-slate-100 text-slate-600 ring-1 ring-slate-200";
+  };
+
+  const getStatusLabel = (taskStatus) => {
+    if (taskStatus === "In Proccess") return "Đang thực hiện";
+    if (taskStatus === "DONE") return "Hoàn thành";
+    return "Cần làm";
   };
 
   return (
@@ -195,9 +201,9 @@ function App() {
             <div className="space-y-6 xl:sticky xl:top-6 xl:self-start">
               <div className="rounded-[24px] bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:rounded-[28px] sm:p-6">
                 <div className="mb-5 space-y-2">
-                  <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
-                    Tạo task
-                  </p>
+                    <p className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
+                      Tạo công việc
+                    </p>
                   <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
                     Tạo mới công việc
                   </h2>
@@ -220,7 +226,7 @@ function App() {
                     className="w-full rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 sm:py-3"
                     onClick={handleAddTask}
                   >
-                    Tạo mới task
+                      Tạo mới công việc
                   </button>
                 </div>
               </div>
@@ -267,7 +273,7 @@ function App() {
                   </h2>
                 </div>
                 <p className="text-sm text-slate-500">
-                  Hiển thị {filteredTasks.length} / {totalTasks} task
+                    Hiển thị {filteredTasks.length} / {totalTasks} công việc
                 </p>
               </div>
 
@@ -290,7 +296,7 @@ function App() {
                                 task.status
                               )}`}
                             >
-                              {task.status}
+                                {getStatusLabel(task.status)}
                             </span>
                             <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500 ring-1 ring-slate-200">
                               {formatDeadline(task.deadline)}
@@ -343,9 +349,9 @@ function App() {
                                 value={editStatus}
                                 onChange={(e) => setEditStatus(e.target.value)}
                               >
-                                <option value="TODO">TODO</option>
-                                <option value="In Proccess">In Proccess</option>
-                                <option value="DONE">DONE</option>
+                                  <option value="TODO">Cần làm</option>
+                                  <option value="In Proccess">Đang thực hiện</option>
+                                  <option value="DONE">Hoàn thành</option>
                               </select>
                               <input
                                 className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 sm:px-4 sm:py-3"
