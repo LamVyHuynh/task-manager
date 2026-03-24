@@ -1,6 +1,6 @@
 # Trang Quản Lý Công Việc Cá Nhân
 
-Single Page Application được xây dựng bằng React + Vite để quản lý công việc cá nhân. Ứng dụng tập trung vào các thao tác quan trọng nhất: tạo task, cập nhật task, theo dõi deadline, tìm kiếm, lọc dữ liệu và lưu trạng thái bằng `localStorage`.
+Đây là Single Page Application được xây dựng bằng React + Vite để hỗ trợ quản lý công việc cá nhân. Ứng dụng gồm các chức năng cơ bản như thêm, sửa, xóa, tìm kiếm, lọc công việc, theo dõi deadline và lưu dữ liệu bằng `localStorage`.
 
 ## Tính năng đã hoàn thành
 
@@ -50,33 +50,29 @@ npm run lint
 
 ## Cấu trúc chính
 
-- `src/App.jsx`: toàn bộ logic hiện tại của SPA, bao gồm CRUD, filter, search, localStorage, warning và UI
-- `src/index.css`: import Tailwind CSS và typography base
+- `src/App.jsx`: chứa phần lớn logic hiện tại của ứng dụng, bao gồm CRUD, filter, search, localStorage, deadline warning và giao diện
+- `src/index.css`: import Tailwind CSS và một số thiết lập base
 - `vite.config.js`: cấu hình Vite và plugin Tailwind CSS
 
 ## Các quyết định kỹ thuật
 
 ### 1. Dùng `useState` + `localStorage`
 
-Đề bài yêu cầu dữ liệu không bị mất khi tắt trình duyệt. Vì phạm vi bài test là SPA đơn giản và không cần backend, `localStorage` là lựa chọn phù hợp nhất:
-
-- dễ implement
-- dễ giải thích
-- đủ để đáp ứng yêu cầu persistence cơ bản
+Vì đề bài yêu cầu dữ liệu không bị mất khi tắt trình duyệt, em chọn `localStorage` để lưu danh sách công việc. Đây là cách phù hợp với phạm vi bài test vì dễ triển khai và vẫn đáp ứng được yêu cầu lưu dữ liệu cơ bản.
 
 State được quản lý bằng `useState`, sau đó đồng bộ vào `localStorage` bằng `useEffect` mỗi khi `tasks` thay đổi.
 
 ### 2. Giữ logic trong `App.jsx`
 
-Trong quá trình làm bài, phiên bản hiện tại ưu tiên hướng dễ học và dễ review từng bước. Vì vậy logic được giữ trong `App.jsx` thay vì tách thành nhiều component nhỏ ngay từ đầu.
+Ở phiên bản hiện tại, em đang gom phần lớn logic trong `App.jsx` để dễ theo dõi state và thuận tiện khi làm từng bước chức năng.
 
-Lựa chọn này giúp:
+Cách làm này giúp:
 
-- dễ theo dõi luồng state
-- dễ debug với người mới học React
-- giảm độ phức tạp khi mới xây dựng tính năng
+- dễ đọc luồng xử lý
+- dễ debug hơn khi mới học React
+- giảm độ phức tạp ở giai đoạn đầu
 
-Nếu mở rộng thêm, nên tách thành:
+Nếu có thêm thời gian, em sẽ tách nhỏ thành:
 
 - `TaskForm`
 - `TaskList`
@@ -90,27 +86,20 @@ Nếu mở rộng thêm, nên tách thành:
 - `Sắp đến hạn`: `deadline` trong khoảng `0-3 ngày tới`
 - Task có trạng thái `DONE` sẽ không hiện cảnh báo deadline nữa
 
-Để tránh sai lệch do giờ/phút/giây, giá trị ngày được đưa về mốc `00:00:00` trước khi so sánh.
+Để tránh sai lệch do giờ/phút/giây, phần ngày được đưa về mốc `00:00:00` trước khi so sánh.
 
-### 4. Search và filter được xử lý trên dữ liệu đã có
+### 4. Search và filter
 
-Thay vì tạo thêm một state riêng cho danh sách lọc, ứng dụng tính `filteredTasks` trực tiếp từ:
+Thay vì tạo thêm một state riêng cho danh sách đã lọc, em xử lý trực tiếp từ dữ liệu `tasks` kết hợp với:
 
-- `tasks`
 - `status`
 - `searchItem`
 
-Cách này giúp UI đơn giản hơn và tránh duplicate state không cần thiết.
+Cách này giúp code đơn giản hơn và tránh lưu nhiều state trùng ý nghĩa.
 
-### 5. Chọn Tailwind CSS cho bước UI
+### 5. Chọn Tailwind CSS cho phần giao diện
 
-Tailwind được chọn để:
-
-- tạo layout nhanh
-- responsive dễ điều chỉnh
-- tiện cho việc polish UI trên desktop/mobile
-
-Giao diện hiện tại theo hướng single-page, card-based, ưu tiên khả năng đọc nhanh task và thao tác nhanh trên cùng một màn hình.
+Em dùng Tailwind CSS để làm giao diện vì dễ dựng layout nhanh, responsive tốt và thuận tiện khi chỉnh UI cho cả desktop lẫn mobile.
 
 ## Những điểm sẽ cải thiện nếu có thêm thời gian
 
@@ -118,14 +107,14 @@ Giao diện hiện tại theo hướng single-page, card-based, ưu tiên khả 
 - Chuẩn hóa giá trị `status` thành constants để tránh typo
 - Thêm `description`, `priority`, `category` cho task
 - Thêm drag-and-drop để đổi trạng thái task nhanh hơn
-- Thêm modal thay cho edit inline để UI sạch hơn trên mobile
+- Thêm modal thay cho edit inline để UI gọn hơn trên mobile
 - Viết unit test / component test cho CRUD, filter, deadline logic
 - Bổ sung animation nhẹ và polish thêm UX cho mobile
 - Cải thiện accessibility: keyboard flow, aria-label, contrast states
 
 ## Trạng thái hiện tại
 
-Ứng dụng hiện đã đáp ứng phần lớn yêu cầu chức năng của đề bài và có thể chạy local, build production, lint clean.
+Hiện tại ứng dụng đã đáp ứng các yêu cầu chính của đề bài và có thể chạy local, build production, cũng như kiểm tra lint.
 
 ## Scripts
 
