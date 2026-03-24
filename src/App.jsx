@@ -33,18 +33,35 @@ function App() {
 
   // Sửa công việc
   // Hiển thị form sửa công việc
-  const handleOpenPromptUpdateTask = (id) => {
-    const taskToEdit = tasks.find((task) => task.id === id);
-    if (taskToEdit) {
-      const newTitle = prompt("Sửa công việc mới: ", taskToEdit.title);
-      if (newTitle !== null && newTitle.trim() !== "") {
-        const updateTask = tasks.map((task) =>
-          task.id === id ? { ...task, title: newTitle } : task
-        );
-        setTasks(updateTask);
-      }
-    }
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editStatus, setEditStatus] = useState("TODO");
+  const [editDeadline, setEditDeadline] = useState("2026-12-31");
+
+  const handleStartEditTask = (task) => {
+    setEditingTaskId(task.id);
+    setEditTitle(task.title);
+    setEditStatus(task.status);
+    setEditDeadline(task.deadline);
   };
+  const handleUpdateTask = (id) => {
+    const updateTask = tasks.map((task) =>
+      task.id === id
+        ? {
+            ...task,
+            title: editTitle,
+            status: editStatus,
+            deadline: editDeadline,
+          }
+        : task
+    );
+    setTasks(updateTask);
+    setEditingTaskId(null); // Đóng form sửa công việc sau khi lưu thay đổi
+    setEditTitle(""); // Reset input sau khi lưu thay đổi
+    setEditStatus("TODO"); // Reset input sau khi lưu thay đổi
+    setEditDeadline("2026-12-31"); // Reset input sau khi lưu thay đổi
+  };
+
   return (
     <div>
       <h1>Trang Quản Lý Công Việc</h1>
@@ -67,9 +84,36 @@ function App() {
             <button onClick={() => handleDeleteTask(task.id)}>
               Xoá công việc
             </button>
-            <button onClick={() => handleOpenPromptUpdateTask(task.id)}>
-              Sửa công việc
-            </button>
+
+            {editingTaskId === task.id ? (
+              <div>
+                <input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                ></input>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                >
+                  <option value="TODO">TODO</option>
+                  <option value="DOING">DOING</option>
+                  <option value="DONE">DONE</option>
+                </select>
+                <input
+                  type="date"
+                  value={editDeadline}
+                  onChange={(e) => setEditDeadline(e.target.value)}
+                ></input>
+
+                <button onClick={() => handleUpdateTask(task.id)}>
+                  Lưu thay đổi
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => handleStartEditTask(task)}>
+                Sửa công việc
+              </button>
+            )}
           </div>
         </div>
       ))}
