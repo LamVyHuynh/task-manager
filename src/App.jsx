@@ -12,7 +12,6 @@ function App() {
   // Thêm task công việc mới
   const handleAddTask = () => {
     if (newTaskTitle.trim() === "") {
-      alert("Vui lòng nhập công việc vào:");
       return;
     }
     const newTask = {
@@ -30,6 +29,21 @@ function App() {
   const handleDeleteTask = (id) => {
     const filteredTasks = tasks.filter((task) => task.id !== id);
     setTasks(filteredTasks);
+  };
+
+  // Sửa công việc
+  // Hiển thị form sửa công việc
+  const handleOpenPromptUpdateTask = (id) => {
+    const taskToEdit = tasks.find((task) => task.id === id);
+    if (taskToEdit) {
+      const newTitle = prompt("Sửa công việc mới: ", taskToEdit.title);
+      if (newTitle !== null && newTitle.trim() !== "") {
+        const updateTask = tasks.map((task) =>
+          task.id === id ? { ...task, title: newTitle } : task
+        );
+        setTasks(updateTask);
+      }
+    }
   };
   return (
     <div>
@@ -49,9 +63,14 @@ function App() {
           <h3>{task.title}</h3>
           <p>Trạng thái: {task.status}</p>
           <p>Deadline: {task.deadline}</p>
-          <button onClick={() => handleDeleteTask(task.id)}>
-            Xoá công việc
-          </button>
+          <div>
+            <button onClick={() => handleDeleteTask(task.id)}>
+              Xoá công việc
+            </button>
+            <button onClick={() => handleOpenPromptUpdateTask(task.id)}>
+              Sửa công việc
+            </button>
+          </div>
         </div>
       ))}
     </div>
