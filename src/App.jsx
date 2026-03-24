@@ -116,9 +116,28 @@ function App() {
     return daysDiff >= 0 && daysDiff <= 3; // Cảnh báo nếu deadline trong vòng 3 ngày tới
   };
 
+  // Thống kê số lượng task, số task hoàn thành, số task quá hạn, số task sắp đến hạn
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.status === "DONE").length;
+  const overdueTasks = tasks.filter(
+    (task) => isOverdue(task.deadline) && task.status !== "DONE"
+  ).length;
+  const dueSoonTasks = tasks.filter(
+    (task) =>
+      !isOverdue(task.deadline) &&
+      isDueSoon(task.deadline) &&
+      task.status !== "DONE"
+  ).length;
+
   return (
     <div>
       <h1>Trang Quản Lý Công Việc</h1>
+      <div>
+        <p>Tổng số công việc: {totalTasks}</p>
+        <p>Số công việc đã hoàn thành: {completedTasks}</p>
+        <p>Số công việc quá hạn: {overdueTasks}</p>
+        <p>Số công việc sắp đến hạn: {dueSoonTasks}</p>
+      </div>
       <div>
         <input
           placeholder="Nhập công việc vào"
