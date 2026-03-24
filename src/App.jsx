@@ -37,6 +37,7 @@ function App() {
   const [editTitle, setEditTitle] = useState("");
   const [editStatus, setEditStatus] = useState("TODO");
   const [editDeadline, setEditDeadline] = useState("2026-12-31");
+  const [status, setStatus] = useState("ALL");
 
   const handleStartEditTask = (task) => {
     setEditingTaskId(task.id);
@@ -62,6 +63,11 @@ function App() {
     setEditDeadline("2026-12-31"); // Reset input sau khi lưu thay đổi
   };
 
+  // Lọc công việc theo trạng thái
+
+  const filteredTasks =
+    status === "ALL" ? tasks : tasks.filter((task) => task.status === status);
+
   return (
     <div>
       <h1>Trang Quản Lý Công Việc</h1>
@@ -73,9 +79,17 @@ function App() {
         ></input>
         <button onClick={handleAddTask}>Thêm Công Việc</button>
       </div>
+      {/* Lọc trạng thái công việc */}
+      <select value={status} onChange={(e) => setStatus(e.target.value)}>
+        <option value="ALL">TẤT CẢ</option>
+        <option value="TODO">TODO</option>
+        <option value="DOING">DOING</option>
+        <option value="DONE">DONE</option>
+      </select>
+
       <hr />
 
-      {tasks.map((task) => (
+      {filteredTasks.map((task) => (
         <div key={task.id}>
           <h3>{task.title}</h3>
           <p>Trạng thái: {task.status}</p>
