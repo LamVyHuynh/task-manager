@@ -25,6 +25,12 @@ function App() {
     setTasks([...tasks, newTask]);
     setNewTaskTitle(""); // reset input sau khi thêm công việc
   };
+
+  // Xoá công việc
+  const handleDeleteTask = (id) => {
+    const filteredTasks = tasks.filter((task) => task.id !== id);
+    setTasks(filteredTasks);
+  };
   return (
     <div>
       <h1>Trang Quản Lý Công Việc</h1>
@@ -43,6 +49,9 @@ function App() {
           <h3>{task.title}</h3>
           <p>Trạng thái: {task.status}</p>
           <p>Deadline: {task.deadline}</p>
+          <button onClick={() => handleDeleteTask(task.id)}>
+            Xoá công việc
+          </button>
         </div>
       ))}
     </div>
