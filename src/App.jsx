@@ -15,21 +15,27 @@ function App() {
   const handleInputChange = (e) => {
     setNewTaskTitle(e.target.value);
   };
+  // Nhập deadline cho công việc mới
+  const [newTaskDeadline, setNewTaskDeadline] = useState("");
+  const handleDeadlineChange = (e) => {
+    setNewTaskDeadline(e.target.value);
+  };
 
   // Thêm task công việc mới
   const handleAddTask = () => {
-    if (newTaskTitle.trim() === "") {
+    if (newTaskTitle.trim() === "" || newTaskDeadline.trim() === "") {
       return;
     }
     const newTask = {
       id: Date.now(), // Sử dụng timestamp làm ID duy nhất
-      title: newTaskTitle,
+      title: newTaskTitle.trim(),
       status: "TODO",
-      deadline: "2026-12-31",
+      deadline: newTaskDeadline,
     };
 
     setTasks([...tasks, newTask]);
     setNewTaskTitle(""); // reset input sau khi thêm công việc
+    setNewTaskDeadline(""); // reset input sau khi thêm công việc
   };
 
   // Xoá công việc
@@ -57,7 +63,7 @@ function App() {
       task.id === id
         ? {
             ...task,
-            title: editTitle,
+            title: editTitle.trim(),
             status: editStatus,
             deadline: editDeadline,
           }
@@ -89,6 +95,11 @@ function App() {
           placeholder="Nhập công việc vào"
           onChange={handleInputChange}
           value={newTaskTitle}
+        ></input>
+        <input
+          type="date"
+          value={newTaskDeadline}
+          onChange={handleDeadlineChange}
         ></input>
         <button onClick={handleAddTask}>Thêm Công Việc</button>
       </div>
@@ -128,7 +139,7 @@ function App() {
                     onChange={(e) => setEditStatus(e.target.value)}
                   >
                     <option value="TODO">TODO</option>
-                    <option value="In Proccess">In Progress</option>
+                    <option value="In Proccess">In Proccess</option>
                     <option value="DONE">DONE</option>
                   </select>
                   <input
